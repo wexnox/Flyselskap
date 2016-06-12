@@ -1,0 +1,71 @@
+body  {
+    background: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #000000;
+}
+header {
+    background: #B9C5C8;
+    padding: 0 15px;  /* topp-padding og venstre-padding  */
+
+}
+article {
+    margin: 0 1.5em 0 12em;
+}
+footer {
+    background: #B9C5C8;
+    padding: 0 15px;  /* topp-padding og venstre-padding  */
+    text-align: center;
+}
+ul {
+    padding: 0;
+    margin: 0;
+}
+li {
+    padding: 3px 0 3px 15px;
+    list-style: none;
+}
+h1 {
+    text-align: left;
+}
+li:hover {
+    background: #ddd;
+    padding: 3px 0 3px 15px;
+}
+li:active {
+    background: #ddd;
+    padding: 3px 0 3px 15px;
+}
+.layout #navigation {
+    background: #FFFFFF;
+    margin: 0 auto; /* marger  */
+    border: 0px #000000; /* bordertykkelse 0  */
+    text-align: left; /* venstrejustert tekst  */
+}
+.layout #navigation {
+    background: #FFFFFF;
+    margin: 0 auto; /* marger  */
+    border: 0px #000000; /* bordertykkelse 0  */
+    text-align: left; /* venstrejustert tekst  */
+}
+.layout header h1 {
+    margin: 0; /* ingen marg rundt toppen  */
+    padding: 10px 0; /* topp-padding og venstre-padding  */
+}
+.layout nav {
+    float: left; /* venstrejustert  */
+    width: auto; /* menybredde  *!*/
+    background: #B9C5C8; /* bakgrunnsfarge  */
+    height: 100%;
+    position: fixed;
+}
+.layout nav h3, .layout nav p {
+    margin-left: 1em; /* venstremarg i menyen  */
+    margin-right: 1em;  /* høyremarg i menyen  */
+    color: #0C3546;
+}
+.layout footer h5 {
+    margin: 0; /* ingen marg rundt bunnen  */
+    padding: 10px 0; /* topp-padding og venstre-padding  */
+}
