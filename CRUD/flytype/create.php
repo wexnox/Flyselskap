@@ -36,10 +36,11 @@ if ( !empty($_POST)) {
     }
 
     //Check if record exists
+//    TODO: denne checken funker ikke
     if (isset($_POST['submit']))
     {
         try {
-            $stmt = $pdo->prepare('SELECT model FROM flytyper WHERE model = ?');
+            $stmt = $pdo->prepare('SELECT * FROM flytyper WHERE model = ?');
             $stmt -> bindParam(1, $_POST['model']);
             $stmt -> execute();
             while ($row = $stmt -> fetch(PDO::FETCH_ASSOC)) {
@@ -67,48 +68,40 @@ if ( !empty($_POST)) {
         header("Location:index.php");
     }
 }
-
+// TODO: skulle lagt til en output om oppgaven ble utført
 ?>
 <div class="container">
-    <div class="span10 offset1">
-        <div class="row">
-            <h3>Create a Customer</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Lag en ny flytype</h3>
+
+            <form class="form-horizontal" action="create.php" method="post">
+                <div class="form-group <?php echo !empty($modelError)?'error':'';?>">
+                    <label for="model">Model:</label>
+                        <input class="form-control" name="model" id="model" type="text"  placeholder="Model" value="<?php echo !empty($model)?$model:'';?>">
+                        <?php if (!empty($modelError)): ?>
+                            <span class="help-inline"><?php echo $modelError;?></span>
+                        <?php endif; ?>
+
+                </div>
+                <div class="form-group <?php echo !empty($navnError)?'error':'';?>">
+                    <label for="name">Navn:</label>
+                        <input class="form-control" name="navn" id="name" type="text" placeholder="Navn" value="<?php echo !empty($navn)?$navn:'';?>">
+                        <?php if (!empty($navnError)): ?>
+                            <span class="help-inline"><?php echo $navnError;?></span>
+                        <?php endif;?>
+                </div>
+                <div class="form-group <?php echo !empty($seterError)?'error':'';?>">
+                    <label for="seter">Maks antallseter:</label>
+                        <input class="form-control" name="seter" id="seter" type="text"  placeholder="Antallseter" value="<?php echo !empty($seter)?$seter:'';?>">
+                        <?php if (!empty($seterError)): ?>
+                            <span class="help-inline"><?php echo $seterError;?></span>
+                        <?php endif;?>
+                </div>
+                    <button type="submit" class="btn btn-success">Create</button>
+                    <button type="reset" class="btn btn-danger">Reset</button>
+                    <a class="btn btn-default" href="index.php">Back</a>
+            </form>
         </div>
-
-        <form class="form-horizontal" action="create.php" method="post">
-            <div class="control-group <?php echo !empty($modelError)?'error':'';?>">
-                <label class="control-label">Model</label>
-                <div class="controls">
-                    <input name="model" type="text"  placeholder="Model" value="<?php echo !empty($model)?$model:'';?>">
-                    <?php if (!empty($modelError)): ?>
-                        <span class="help-inline"><?php echo $modelError;?></span>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="control-group <?php echo !empty($navnError)?'error':'';?>">
-                <label class="control-label">Navn</label>
-                <div class="controls">
-                    <input name="navn" type="text" placeholder="Navn" value="<?php echo !empty($navn)?$navn:'';?>">
-                    <?php if (!empty($navnError)): ?>
-                        <span class="help-inline"><?php echo $navnError;?></span>
-                    <?php endif;?>
-                </div>
-            </div>
-            <div class="control-group <?php echo !empty($seterError)?'error':'';?>">
-                <label class="control-label">Maks antallseter</label>
-                <div class="controls">
-                    <input name="seter" type="text"  placeholder="Antallseter" value="<?php echo !empty($seter)?$seter:'';?>">
-                    <?php if (!empty($seterError)): ?>
-                        <span class="help-inline"><?php echo $seterError;?></span>
-                    <?php endif;?>
-                </div>
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-success">Create</button>
-                <a class="btn" href="index.php">Back</a>
-            </div>
-        </form>
-    </div>
-
-</div> <!-- /container -->
-
+        </div>
+    </div> <!-- /container -->

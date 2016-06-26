@@ -27,41 +27,27 @@ if ( null==$id ) {
 
 ?>
     <div class="container">
-        <div class="span10 offset1">
-            <div class="row">
-                <h3>Read a flytype</h3>
-            </div>
-            <div class="form-horizontal" >
-                <div class="control-group">
-                    <label class="control-label">Model</label>
-                    <div class="controls">
-                        <label class="checkbox">
-                            <?php echo $data['model'];?>
-                        </label>
+        <div class="row">
+            <h3>Read a flytype</h3>
+            <form class="form" role="form">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label>Registrert Model:</label>
+                        <?php echo $data['model'];?>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Navn</label>
-                    <div class="controls">
-                        <label class="checkbox">
-                            <?php echo $data['navn'];?>
-                        </label>
+                    <div class="form-group">
+                        <label>Registrert Navn:</label>
+                        <?php echo $data['navn'];?>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">seter</label>
-                    <div class="controls">
-                        <label class="checkbox">
-                            <?php echo $data['seter'];?>
-                        </label>
+                    <div class="form-group">
+                        <label>Registrert antallseter:</label>
+                        <?php echo $data['seter'];?>
                     </div>
+                        <a class="btn btn-default" href="index.php">Back</a>
                 </div>
-                <div class="form-actions">
-                    <a class="btn" href="index.php">Back</a>
-                </div>
-            </div>
+            </form>
         </div>
-    </div> <!-- /container -->
+    </div>
 
 <?php
 include ('../base/footer.php');
