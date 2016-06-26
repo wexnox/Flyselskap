@@ -5,7 +5,6 @@
  * Date: 26/06/2016
  * Time: 17:39
  */
-
 include ('../base/head.php');
 include ('../base/nav.php');
 require '../base/db-connection.php';
@@ -25,6 +24,7 @@ if ( null==$id ) {
     $data = $q->fetch(PDO::FETCH_ASSOC);
     Database::disconnect();
 }
+
 ?>
     <div class="container">
         <div class="span10 offset1">
