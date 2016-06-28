@@ -7,9 +7,9 @@
  */
 ?>
 <?php
-
-require 'database.php';
-
+include ('../base/head.php');
+include ('../base/nav.php');
+require '../base/db-connection.php';
 $id = null;
 if ( !empty($_GET['id'])) {
     $id = $_REQUEST['id'];
@@ -20,112 +20,98 @@ if ( null==$id ) {
 }
 
 if ( !empty($_POST)) {
-    // keep track validation errors
-    $nameError = null;
-    $emailError = null;
-    $mobileError = null;
+    $modelError = null;
+    $navnError = null;
+    $seterError = null;
 
-    // keep track post values
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $mobile = $_POST['mobile'];
-
-    // validate input
+    $model = $_POST['model'];
+    $navn = $_POST['navn'];
+    $seter = $_POST['seter'];
     $valid = true;
-    if (empty($name)) {
-        $nameError = 'Please enter Name';
+    if (empty($model)) {
+        $modelError = 'Fyll ut Model';
         $valid = false;
     }
 
-    if (empty($email)) {
-        $emailError = 'Please enter Email Address';
-        $valid = false;
-    } else if ( !filter_var($email,FILTER_VALIDATE_EMAIL) ) {
-        $emailError = 'Please enter a valid Email Address';
+    if (empty($navn)) {
+        $navnError = 'Fyll ut Navn';
         $valid = false;
     }
 
-    if (empty($mobile)) {
-        $mobileError = 'Please enter Mobile Number';
+    if (empty($seter)) {
+        $seterError = 'Fyll ut Max antallseter';
         $valid = false;
     }
-
-    // update data
+//    else {
+//        $pdo = Database::connect();
+//        $count = $pdo->prepare('SELECT model FROM flytyper WHERE model=:model');
+//        $count->bindParam(":model", $model);
+//        $count->execute();
+//        $no = $count->rowCount();
+//        Database::disconnect();
+//        if ($no > 0) {
+//            $valid = false;
+//            echo 'Fytype model er registrert fra før';
+//        }
+// TODO: ny
+//    $res = $DB->prepare('SELECT COUNT(*) FROM table');
+//    $res->execute();
+//    $num_rows = $res->fetchColumn();
     if ($valid) {
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE customers  set name = ?, email = ?, mobile =? WHERE id = ?";
+        $sql = "UPDATE flytyper  SET model = ?, navn = ?, seter =? WHERE id = ?";
         $q = $pdo->prepare($sql);
-        $q->execute(array($name,$email,$mobile,$id));
+        $q->execute(array($model, $navn, $seter, $id));
         Database::disconnect();
         header("Location: index.php");
     }
-} else {
+}
+// TODO: her blir det feil?, samme variabel navn?
+else {
     $pdo = Database::connect();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT * FROM customers where id = ?";
+    $sql = "SELECT * FROM flytyper WHERE id = ?";
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
-    $name = $data['name'];
-    $email = $data['email'];
-    $mobile = $data['mobile'];
+    $model = $data['model'];
+    $navn = $data['navn'];
+    $seter = $data['seter'];
     Database::disconnect();
 }
 ?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <link   href="css/bootstrap.min.css" rel="stylesheet">
-    <script src="js/bootstrap.min.js"></script>
-</head>
-
-<body>
 <div class="container">
-
-    <div class="span10 offset1">
-        <div class="row">
-            <h3>Update a Customer</h3>
-        </div>
-
-        <form class="form-horizontal" action="update.php?id=<?php echo $id?>" method="post">
-            <div class="control-group <?php echo !empty($nameError)?'error':'';?>">
-                <label class="control-label">Name</label>
-                <div class="controls">
-                    <input name="name" type="text"  placeholder="Name" value="<?php echo !empty($name)?$name:'';?>">
-                    <?php if (!empty($nameError)): ?>
-                        <span class="help-inline"><?php echo $nameError;?></span>
+    <div class="row">
+        <h3>Update a Flytype</h3>
+        <div class="col-lg-4">
+            <form class="form-horizontal" action="update.php?id=<?php echo $id?>" method="post">
+                <div class="form-group <?php echo !empty($modelError)?'error':'';?>">
+                    <label for="model">Name</label>
+                    <input class="form-control" id="model" name="model" type="text"  placeholder="Model" value="<?php echo !empty($model)?$model:'';?>">
+                    <?php if (!empty($modelError)): ?>
+                    <span class="help-inline"><?php echo $modelError;?></span>
                     <?php endif; ?>
                 </div>
-            </div>
-            <div class="control-group <?php echo !empty($emailError)?'error':'';?>">
-                <label class="control-label">Email Address</label>
-                <div class="controls">
-                    <input name="email" type="text" placeholder="Email Address" value="<?php echo !empty($email)?$email:'';?>">
-                    <?php if (!empty($emailError)): ?>
-                        <span class="help-inline"><?php echo $emailError;?></span>
+                <div class="form-group <?php echo !empty($navnError)?'error':'';?>">
+                    <label for="navn">Email Address</label>
+                    <input class="form-control" id="navn" name="navn" type="text" placeholder="Email Address" value="<?php echo !empty($navn)?$navn:'';?>">
+                    <?php if (!empty($navnError)): ?>
+                    <span class="help-inline"><?php echo $navnError;?></span>
                     <?php endif;?>
                 </div>
-            </div>
-            <div class="control-group <?php echo !empty($mobileError)?'error':'';?>">
-                <label class="control-label">Mobile Number</label>
-                <div class="controls">
-                    <input name="mobile" type="text"  placeholder="Mobile Number" value="<?php echo !empty($mobile)?$mobile:'';?>">
-                    <?php if (!empty($mobileError)): ?>
-                        <span class="help-inline"><?php echo $mobileError;?></span>
+                <div class="form-group <?php echo !empty($seterError)?'error':'';?>">
+                    <label for="seter">Mobile Number</label>
+                    <input class="form-control" id="seter" name="seter" type="text"  placeholder="Mobile Number" value="<?php echo !empty($seter)?$seter:'';?>">
+                    <?php if (!empty($seterError)): ?>
+                    <span class="help-inline"><?php echo $seterError;?></span>
                     <?php endif;?>
                 </div>
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-success">Update</button>
-                <a class="btn" href="index.php">Back</a>
-            </div>
-        </form>
-    </div>
+                <button class="btn btn-success" type="submit" >Update</button>
+                <button class="btn btn-danger" type="reset">Reset</button>
+                <a class="btn btn-default" href="index.php">Back</a>
 
+            </form>
+        </div>
+    </div>
 </div> <!-- /container -->
-</body>
-</html>
