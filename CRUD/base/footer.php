@@ -6,7 +6,7 @@
  * Time: 17:12
  */
 ?>
-</article>
+
 <div class="container">
     <footer class="footer navbar-fixed-bottom"> Laget av Lasse Rønningen</footer>
 </div>

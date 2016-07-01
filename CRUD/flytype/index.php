@@ -8,49 +8,48 @@
 include ('../base/head.php');
 include ('../base/nav.php');
 ?>
-<div class="container">
-    <div class="row">
-        <h3>PHP CRUD Grid</h3>
+    <div class="container">
+        <div class="row">
+            <h3>Fly CRUD</h3>
+        </div>
+        <div class="row">
+            <p>
+                <a href="create.php" class="btn btn-success">Create</a>
+            </p>
+            <table class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Name</th>
+                    <th>Seter</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                include '../base/db-connection.php';
+                $pdo = Database::connect();
+                $sql = 'SELECT * FROM flytyper ORDER BY id DESC';
+                foreach ($pdo->query($sql) as $row) {
+                    echo '<tr>';
+                    echo '<td>'. $row['model'] . '</td>';
+                    echo '<td>'. $row['navn'] . '</td>';
+                    echo '<td>'. $row['seter'] . '</td>';
+                    echo '<td width=250>';
+                    echo '<a class="btn btn-default" href="read.php?id='.$row['id'].'">Read</a>';
+                    echo '&nbsp;';
+                    echo '<a class="btn btn-success" href="update.php?id='.$row['id'].'">Update</a>';
+                    echo '&nbsp;';
+                    echo '<a class="btn btn-danger" href="delete.php?id='.$row['id'].'">Delete</a>';
+                    echo '</td>';
+                    echo '</tr>';
+                }
+                Database::disconnect();
+                ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="row">
-        <p>
-            <a href="create.php" class="btn btn-success">Create</a>
-        </p>
-
-        <table class="table table-striped table-bordered">
-            <thead>
-            <tr>
-                <th>Model</th>
-                <th>Name</th>
-                <th>Seter</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php
-            include '../base/db-connection.php';
-            $pdo = Database::connect();
-            $sql = 'SELECT * FROM flytyper ORDER BY id DESC';
-            foreach ($pdo->query($sql) as $row) {
-                echo '<tr>';
-                echo '<td>'. $row['model'] . '</td>';
-                echo '<td>'. $row['navn'] . '</td>';
-                echo '<td>'. $row['seter'] . '</td>';
-                echo '<td width=250>';
-                echo '<a class="btn btn-default" href="read.php?id='.$row['id'].'">Read</a>';
-                echo '&nbsp;';
-                echo '<a class="btn btn-success" href="update.php?id='.$row['id'].'">Update</a>';
-                echo '&nbsp;';
-                echo '<a class="btn btn-danger" href="delete.php?id='.$row['id'].'">Delete</a>';
-                echo '</td>';
-                echo '</tr>';
-            }
-            Database::disconnect();
-            ?>
-            </tbody>
-        </table>
-    </div>
-</div> <!-- /container -->
 <?php
 include ('../base/footer.php');
 ?>
