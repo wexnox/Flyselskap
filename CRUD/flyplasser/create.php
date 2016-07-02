@@ -6,6 +6,7 @@
  * Date: 26/06/2016
  * Time: 17:39
  * TODO: trenger JavaScript validering
+ * TODO: Her må jeg bytte ut rowCount med COUNT(*) og fetchcolumn
  */
 include ('../base/head.php');
 include ('../base/nav.php');
@@ -31,7 +32,21 @@ if ( !empty($_POST)) {
     if (empty($seter)) {
         $seterError = 'Fyll ut Max antallseter';
         $valid = false;
-    } else {
+    }
+    // TODO: Her må jeg sette inn en check for og se om navn ikke er i bruk, om det er tilfellet vil den få $valid = false; erstatte nåværende løsning
+//    if ($navn) {
+//        $sql = 'SELECT COUNT(*) FROM flyplasser WHERE navn = ? LIMIT 1';
+//        $stmt = $pdo->prepare($sql);
+//        $stmt->bindParam(1, $_GET['navn'], PDO::PARAM_STR);
+//        $stmt->execute();
+////        $res = $DB->query('SELECT COUNT(*) FROM table');
+////        $num_rows = $res->fetchColumn();
+//        if ($stmt->fetchColumn()){
+//            $valid = false;
+////            die('found');
+//        }
+    
+    else {
         $pdo = Database::connect();
         $count= $pdo->prepare('SELECT model FROM flytyper WHERE model=:model');
         $count ->bindParam(":model",$model);
