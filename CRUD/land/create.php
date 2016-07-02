@@ -6,35 +6,25 @@
  * Date: 26/06/2016
  * Time: 17:39
  * TODO: trenger JavaScript validering
+ * TODO: Her må jeg bytte ut rowCount med COUNT(*) og fetchcolumn
  */
 include ('../base/head.php');
 include ('../base/nav.php');
 require '../base/db-connection.php';
 if ( !empty($_POST)) {
-    $modelError = null;
     $navnError = null;
-    $seterError = null;
 
-    $model = $_POST['model'];
     $navn = $_POST['navn'];
-    $seter = $_POST['seter'];
 
     $valid = true;
-    if (empty($model)) {
-        $modelError = 'Fyll ut Model';
-        $valid = false;
-    }
+
     if (empty($navn)) {
         $navnError = 'Fyll ut Navn';
         $valid = false;
-    }
-    if (empty($seter)) {
-        $seterError = 'Fyll ut Max antallseter';
-        $valid = false;
     } else {
         $pdo = Database::connect();
-        $count= $pdo->prepare('SELECT model FROM flytyper WHERE model=:model');
-        $count ->bindParam(":model",$model);
+        $count= $pdo->prepare('SELECT navn FROM land WHERE navn=:navn');
+        $count ->bindParam(":navn",$navn);
         $count->execute();
         $no=$count->rowCount();
         if ($no > 0){
