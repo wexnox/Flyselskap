@@ -6,6 +6,7 @@
  * Date: 26/06/2016
  * Time: 17:39
  * TODO: trenger JavaScript validering
+ * TODO: Her må jeg bytte ut rowCount med COUNT(*) og fetchcolumn
  */
 include ('../base/head.php');
 include ('../base/nav.php');
