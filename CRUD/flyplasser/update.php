@@ -43,6 +43,20 @@ if ( !empty($_POST)) {
         $seterError = 'Fyll ut Max antallseter';
         $valid = false;
     }
+    // TODO: Her må jeg sette inn en check for og se om navn ikke er i bruk, om det er tilfellet vil den få $valid = false; erstatte nåværende løsning
+    if ($navn) {
+        $sql = 'SELECT COUNT(*) FROM flyplasser WHERE navn = ? LIMIT 1';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(1, $_GET['navn'], PDO::PARAM_STR);
+        $stmt->execute();
+//        $res = $DB->query('SELECT COUNT(*) FROM table');
+//        $num_rows = $res->fetchColumn();
+        if ($stmt->fetchColumn()){
+            $valid = false;
+//            die('found');
+        }
+
+    }
     if ($valid) {
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -52,6 +66,7 @@ if ( !empty($_POST)) {
         Database::disconnect();
         header("Location: index.php");
     }
+
 }
 else {
     $pdo = Database::connect();
