@@ -46,7 +46,7 @@ if ( !empty($_POST)) {
     if ($valid) {
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE flytyper  SET model = ?, navn = ?, seter =? WHERE id = ?";
+        $sql = "UPDATE land  SET model = ?, navn = ?, seter =? WHERE id = ?";
         $q = $pdo->prepare($sql);
         $q->execute(array($model, $navn, $seter, $id));
         Database::disconnect();
