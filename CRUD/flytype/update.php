@@ -5,6 +5,7 @@
  * Date: 26/06/2016
  * Time: 17:39
  * TODO: trenger JavaScript validering
+ * TODO: Her må jeg bytte ut rowCount med COUNT(*) og fetchcolumn
  */
 ?>
 <?php
@@ -43,6 +44,17 @@ if ( !empty($_POST)) {
         $seterError = 'Fyll ut Max antallseter';
         $valid = false;
     }
+    if ($model){
+        $pdo = Database::connect();
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = 'SELECT COUNT(*)FROM flytyper WHERE model=? LIMIT 1';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(1, $_GET['model'], PDO::PARAM_STR);
+        $stmt ->execute();
+        if($stmt->fetchColumn())
+//            die ('found');
+        $valid=false;
+    }
     if ($valid) {
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -52,8 +64,7 @@ if ( !empty($_POST)) {
         Database::disconnect();
         header("Location: index.php");
     }
-}
-else {
+} else {
     $pdo = Database::connect();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $sql = "SELECT * FROM flytyper WHERE id = ?";
