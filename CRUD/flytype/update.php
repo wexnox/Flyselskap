@@ -44,7 +44,7 @@ if ( !empty($_POST)) {
         $seterError = 'Fyll ut Max antallseter';
         $valid = false;
     }
-    if ($model){
+    if (!empty($model)){
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = 'SELECT COUNT(*)FROM flytyper WHERE model=? LIMIT 1';
