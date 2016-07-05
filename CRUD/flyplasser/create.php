@@ -19,8 +19,10 @@ if ( !empty($_POST)) {
     $model = $_POST['model'];
     $navn = $_POST['navn'];
     $seter = $_POST['seter'];
-
+    $land_id = $_POST['id'];
     $valid = true;
+
+
     if (empty($model)) {
         $modelError = 'Fyll ut Model';
         $valid = false;
@@ -45,7 +47,6 @@ if ( !empty($_POST)) {
 //            $valid = false;
 ////            die('found');
 //        }
-    
     else {
         $pdo = Database::connect();
         $count= $pdo->prepare('SELECT model FROM flytyper WHERE model=:model');
@@ -58,14 +59,15 @@ if ( !empty($_POST)) {
         else{
             $pdo = Database::connect();
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "INSERT INTO flytyper(model,navn,seter) VALUES(?, ?, ?)";
+            $sql = "INSERT INTO flytyper(model,navn,seter, land_id) VALUES(?, ?, ?, ?)";
             $q = $pdo->prepare($sql);
-            $q->execute(array($model, $navn, $seter));
+            $q->execute(array($model, $navn, $seter, $land_id));
             Database::disconnect();
             header("Location:index.php");
         }
     }
 }
+include ("listebox-land.php")
 ?>
     <div class="container">
         <div class="row">
@@ -93,6 +95,15 @@ if ( !empty($_POST)) {
                         <?php if (!empty($seterError)): ?>
                             <span class="help-inline"><?php echo $seterError;?></span>
                         <?php endif;?>
+                    </div>
+                    <div class="form-group">
+                        <label for="land_id">
+                            <select name="land_id" id="land_id">
+                                <?php foreach ($land as $row): ?>
+                                    <option><?=$row["navn"]?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </label>
                     </div>
                     <button type="submit" class="btn btn-success">Create</button>
                     <button type="reset" class="btn btn-danger">Reset</button>
