@@ -42,7 +42,7 @@ $url = 'http://homestead.app/CRUD';
                         <ul class="dropdown-menu">
                             <li><a href="<?php echo "$url";?>">Reise</a></li>
                             <li><a href="<?php echo "$url";?>">Flyrute</a></li>
-                            <li><a href="<?php echo "$url";?>">Flybilettbestilling</a></li>
+                            <li><a href="<?php echo "$url";?>">Flybillettbestilling</a></li>
                             <li><a href="<?php echo "$url";?>">Prisliste</a></li>
                         </ul>
                     </li>
