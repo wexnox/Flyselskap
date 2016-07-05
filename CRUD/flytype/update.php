@@ -9,18 +9,16 @@
  */
 ?>
 <?php
+require '../base/db-connection.php';
 include ('../base/head.php');
 include ('../base/nav.php');
-require '../base/db-connection.php';
 $id = null;
 if ( !empty($_GET['id'])) {
     $id = $_REQUEST['id'];
 }
-
 if ( null==$id ) {
     header("Location: index.php");
 }
-
 if ( !empty($_POST)) {
     $modelError = null;
     $navnError = null;
@@ -34,12 +32,10 @@ if ( !empty($_POST)) {
         $modelError = 'Fyll ut Model';
         $valid = false;
     }
-
     if (empty($navn)) {
         $navnError = 'Fyll ut Navn';
         $valid = false;
     }
-
     if (empty($seter)) {
         $seterError = 'Fyll ut Max antallseter';
         $valid = false;
@@ -47,24 +43,26 @@ if ( !empty($_POST)) {
     if (!empty($model)){
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = 'SELECT COUNT(*)FROM flytyper WHERE model=? LIMIT 1';
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(1, $_GET['model'], PDO::PARAM_STR);
-        $stmt ->execute();
-        if($stmt->fetchColumn()){
-            $valid=false;
+        $sql = $pdo->prepare("SELECT COUNT(*) AS `total` FROM flytyper WHERE model = :model");
+        $sql->execute(array(':model' => $model));
+        $result = $sql->fetchObject();
+        if ($result->total > 0)
+        {
+            echo '<div class="container"><div class="jumbotron">';
+            echo '<p class="lead">Flytype model: <strong>' . $model. '</strong> er allerede i bruk.<p>';
+            echo '</div></div>';
         }
-//            die ('found');
-
-    }
-    if ($valid) {
-        $pdo = Database::connect();
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE flytyper  SET model = ?, navn = ?, seter =? WHERE id = ?";
-        $q = $pdo->prepare($sql);
-        $q->execute(array($model, $navn, $seter, $id));
-        Database::disconnect();
-        header("Location: index.php");
+        else  {
+            if ($valid) {
+                $pdo = Database::connect();
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $sql = "UPDATE flytyper  SET model = ?, navn = ?, seter =? WHERE id = ?";
+                $q = $pdo->prepare($sql);
+                $q->execute(array($model, $navn, $seter, $id));
+                Database::disconnect();
+                header("Location: index.php");
+            }
+        }
     }
 } else {
     $pdo = Database::connect();
