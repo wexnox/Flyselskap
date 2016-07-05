@@ -18,7 +18,6 @@ if ( !empty($_POST)) {
     $flytype_id = $_POST['flytype_id'];
     $kode = $_POST['kode'];
 
-
     $valid = true;
     if (empty($flytype_id)) {
         $flytype_idError = 'Fyll ut flytype';
