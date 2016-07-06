@@ -40,7 +40,7 @@ if ( !empty($_POST)) {
         $seterError = 'Fyll ut Max antallseter';
         $valid = false;
     }
-    if (!empty($model)){
+    if (!empty($model)){  // denne her skal videreføres
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = $pdo->prepare("SELECT COUNT(*) AS `total` FROM flytyper WHERE model = :model");
@@ -48,11 +48,11 @@ if ( !empty($_POST)) {
         $result = $sql->fetchObject();
         if ($result->total > 0)
         {
-            echo '<div class="container"><div class="jumbotron">';
+            echo '<div class="container">';
+            echo '<div class="alert alert-danger">';
             echo '<p class="lead">Flytype model: <strong>' . $model. '</strong> er allerede i bruk.<p>';
             echo '</div></div>';
-        }
-        else  {
+        } else {
             if ($valid) {
                 $pdo = Database::connect();
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -104,7 +104,6 @@ if ( !empty($_POST)) {
                         <?php endif;?>
                     </div>
                     <button class="btn btn-success" type="submit" >Update</button>
-                    <button class="btn btn-danger" type="reset">Reset</button>
                     <a class="btn btn-default" href="index.php">Back</a>
                 </form>
             </div>

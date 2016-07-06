@@ -28,7 +28,7 @@ if ( null==$id ) {
 ?>
     <div class="container">
         <div class="row">
-            <h3>Read a flytype</h3>
+            <h3>Informasjon om flytypen</h3>
             <form class="form" role="form">
                 <div class="form-horizontal">
                     <div class="form-group">
