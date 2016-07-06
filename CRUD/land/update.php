@@ -21,79 +21,62 @@ if ( null==$id ) {
 }
 
 if ( !empty($_POST)) {
-    $modelError = null;
     $navnError = null;
-    $seterError = null;
-
-    $model = $_POST['model'];
     $navn = $_POST['navn'];
-    $seter = $_POST['seter'];
     $valid = true;
-    if (empty($model)) {
-        $modelError = 'Fyll ut Model';
-        $valid = false;
-    }
 
     if (empty($navn)) {
         $navnError = 'Fyll ut Navn';
         $valid = false;
     }
-
-    if (empty($seter)) {
-        $seterError = 'Fyll ut Max antallseter';
-        $valid = false;
-    }
-    if ($valid) {
+    if (!empty($navn)){  // denne her skal videreføres
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE land  SET model = ?, navn = ?, seter =? WHERE id = ?";
-        $q = $pdo->prepare($sql);
-        $q->execute(array($model, $navn, $seter, $id));
-        Database::disconnect();
-        header("Location: index.php");
+        $sql = $pdo->prepare("SELECT COUNT(*) AS `total` FROM land WHERE navn = :navn");
+        $sql->execute(array(':navn' => $navn));
+        $result = $sql->fetchObject();
+        if ($result->total > 0)
+        {
+            echo '<div class="container">';
+            echo '<div class="alert alert-danger">';
+            echo '<p class="lead">Landet: <strong>' . $navn. '</strong> er allerede i bruk.<p>';
+            echo '</div></div>';
+        } else {
+            if ($valid) {
+                $pdo = Database::connect();
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $sql = "UPDATE land  SET navn = ? WHERE id = ?";
+                $q = $pdo->prepare($sql);
+                $q->execute(array($navn, $id));
+                Database::disconnect();
+                header("Location: index.php");
+            }
+        }
     }
-}
-else {
+} else {
     $pdo = Database::connect();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT * FROM flytyper WHERE id = ?";
+    $sql = "SELECT * FROM land WHERE id = ?";
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
-    $model = $data['model'];
     $navn = $data['navn'];
-    $seter = $data['seter'];
     Database::disconnect();
 }
 ?>
     <div class="container">
         <div class="row">
-            <h3>Update a Flytype</h3>
+            <h3>Update navnet på land</h3>
             <div class="col-lg-4">
                 <form class="form-horizontal" action="update.php?id=<?php echo $id?>" method="post">
-                    <div class="form-group <?php echo !empty($modelError)?'error':'';?>">
-                        <label for="model">Model:</label>
-                        <input class="form-control" id="model" name="model" type="text"  placeholder="Fyll ut model" value="<?php echo !empty($model)?$model:'';?>">
-                        <?php if (!empty($modelError)): ?>
-                            <span class="help-inline"><?php echo $modelError;?></span>
-                        <?php endif; ?>
-                    </div>
                     <div class="form-group <?php echo !empty($navnError)?'error':'';?>">
-                        <label for="navn">Navn:</label>
-                        <input class="form-control" id="navn" name="navn" type="text" placeholder="Fyll ut Navn" value="<?php echo !empty($navn)?$navn:'';?>">
+                        <label for="navn">Landnavn:</label>
+                        <input class="form-control" id="navn" name="navn" type="text"  placeholder="Fyll navnet på landet" value="<?php echo !empty($navn)?$navn:'';?>">
                         <?php if (!empty($navnError)): ?>
                             <span class="help-inline"><?php echo $navnError;?></span>
                         <?php endif;?>
                     </div>
-                    <div class="form-group <?php echo !empty($seterError)?'error':'';?>">
-                        <label for="seter">Antallseter</label>
-                        <input class="form-control" id="seter" name="seter" type="text"  placeholder="Fyll ut max antallseter" value="<?php echo !empty($seter)?$seter:'';?>">
-                        <?php if (!empty($seterError)): ?>
-                            <span class="help-inline"><?php echo $seterError;?></span>
-                        <?php endif;?>
-                    </div>
                     <button class="btn btn-success" type="submit" >Update</button>
-                    <button class="btn btn-danger" type="reset">Reset</button>
                     <a class="btn btn-default" href="index.php">Back</a>
                 </form>
             </div>
