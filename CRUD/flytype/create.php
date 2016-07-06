@@ -6,7 +6,7 @@
  * Date: 26/06/2016
  * Time: 17:39
  * TODO: trenger JavaScript validering
- * TODO: Her må jeg bytte ut rowCount med COUNT(*) og fetchcolumn
+ * TODO: Her må jeg bytte ut rowCount med COUNT(*) og fetchcolumn se flytype\update.php
  */
 include ('../base/head.php');
 include ('../base/nav.php');
@@ -34,21 +34,27 @@ if ( !empty($_POST)) {
         $valid = false;
     } else {
         $pdo = Database::connect();
-        $count= $pdo->prepare('SELECT model FROM flytyper WHERE model=:model');
-        $count ->bindParam(":model",$model);
-        $count->execute();
-        $no=$count->rowCount();
-        if ($no > 0){
-            $valid =false;
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = $pdo->prepare("SELECT COUNT(*) AS `total` FROM flytyper WHERE model = :model");
+        $sql->execute(array(':model' => $model));
+        $result = $sql->fetchObject();
+        if ($result->total > 0)
+        {
+            echo '<div class="container">';
+            echo '<div class="alert alert-danger">';
+            echo '<p class="lead">Flytype: <strong>' . $model. '</strong> er allerede i bruk.<p>';
+            echo '</div></div>';
         }
         else{
-            $pdo = Database::connect();
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "INSERT INTO flytyper(model,navn,seter) VALUES(?, ?, ?)";
-            $q = $pdo->prepare($sql);
-            $q->execute(array($model, $navn, $seter));
-            Database::disconnect();
-            header("Location:index.php");
+            if ($valid) {
+                $pdo = Database::connect();
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $sql = "INSERT INTO flytype(model,navn, seter) VALUES(?, ?)";
+                $q = $pdo->prepare($sql);
+                $q->execute(array($model, $navn, $seter));
+                Database::disconnect();
+                header("Location:index.php");
+            }
         }
     }
 }
