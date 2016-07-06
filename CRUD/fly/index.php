@@ -28,7 +28,7 @@ include ('../base/nav.php');
                 <?php
                 include '../base/db-connection.php';
                 $pdo = Database::connect();
-                $sql = 'SELECT * FROM fly ORDER BY id DESC';
+                $sql = 'SELECT * FROM fly ORDER BY kode';
                 foreach ($pdo->query($sql) as $row) {
                     echo '<tr>';
                     echo '<td>'. $row['flytype_id'] . '</td>';

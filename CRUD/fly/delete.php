@@ -25,7 +25,7 @@ if ( !empty($_POST)) {
     // slett data
     $pdo = Database::connect();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "DELETE FROM flytyper  WHERE id = ?";
+    $sql = "DELETE FROM fly  WHERE id = ?";
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     Database::disconnect();
@@ -36,7 +36,7 @@ if ( !empty($_POST)) {
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <h3>Slett en flytype</h3>
+                <h3>Slett fly</h3>
                 <form class="form-horizontal" action="delete.php" method="post">
                     <input type="hidden" name="id" value="<?php echo $id;?>"/>
                     <p class="alert alert-error">Are you sure to delete ?</p>

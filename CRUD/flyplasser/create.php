@@ -17,14 +17,13 @@ if ( !empty($_POST)) {
     $navnError = null;
 
     $kode = $_POST['kode'];
-    $navn = $_POST['navn'];
-    $land_id = $_POST['id'];
+    $navn = $_POST['fpnavn'];
+    $land_id = $_POST['land_id'];
 
     $valid = true;
-
-
+    
     if (empty($kode)) {
-        $kodeError = 'Fyll ut Model';
+        $kodeError = 'Fyll ut Kode';
         $valid = false;
     }
     if (empty($navn)) {
@@ -32,61 +31,58 @@ if ( !empty($_POST)) {
         $valid = false;
     } else {
         $pdo = Database::connect();
-        $count= $pdo->prepare('SELECT model FROM flyplasser WHERE model=:model');
-        $count ->bindParam(":model",$model);
-        $count->execute();
-        $no=$count->rowCount();
-        if ($no > 0){
-            $valid =false;
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = $pdo->prepare("SELECT COUNT(*) AS `total` FROM flyplasser WHERE kode = :kode");
+        $sql->execute(array(':kode' => $kode));
+        $result = $sql->fetchObject();
+        if ($result->total > 0)
+        {
+            echo '<div class="container">';
+            echo '<div class="alert alert-danger">';
+            echo '<p class="lead">Flyplassen: <strong>' . $kode. '</strong> er allerede i bruk.<p>';
+            echo '</div></div>';
         }
         else{
-            $pdo = Database::connect();
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "INSERT INTO flyplasser(kode,navn, land_id) VALUES(?, ?, ?)";
-            $q = $pdo->prepare($sql);
-            $q->execute(array($kode, $navn, $land_id));
-            Database::disconnect();
-            header("Location:index.php");
+            if ($valid) {
+                $pdo = Database::connect();
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $sql = "INSERT INTO flyplasser(land_id, kode,navn) VALUES(?, ?, ?)";
+                $q = $pdo->prepare($sql);
+                $q->execute(array($land_id, $kode, $navn ));
+                Database::disconnect();
+                header("Location:index.php");
+            }
         }
     }
 }
-include ("listebox-land.php")
+include ("listebox-land.php");
 ?>
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <h3>Lag en ny flytype</h3>
-
+                <h3>Lag en ny flyplass</h3>
                 <form class="form-horizontal" action="create.php" method="post">
-                    <div class="form-group <?php echo !empty($modelError)?'error':'';?>">
-                        <label for="model">Model:</label>
-                        <input class="form-control" name="model" id="model" type="text"  placeholder="Model" value="<?php echo !empty($model)?$model:'';?>">
-                        <?php if (!empty($modelError)): ?>
+                    <div class="form-group <?php echo !empty($kodeError)?'error':'';?>">
+                        <label for="kode">Flyplass kode:</label>
+                        <input class="form-control" name="kode" id="kode" type="text"  placeholder="Fyll ut flyplass kode" value="<?php echo !empty($kode)?$kode:'';?>">
+                        <?php if (!empty($kodeError)): ?>
                             <span class="help-inline"><?php echo $modelError;?></span>
                         <?php endif; ?>
                     </div>
                     <div class="form-group <?php echo !empty($navnError)?'error':'';?>">
-                        <label for="name">Navn:</label>
-                        <input class="form-control" name="navn" id="name" type="text" placeholder="Navn" value="<?php echo !empty($navn)?$navn:'';?>">
+                        <label for="fpname">Navn:</label>
+                        <input class="form-control" name="fpnavn" id="fpname" type="text" placeholder="Fyll ut navn på flyplassen" value="<?php echo !empty($navn)?$navn:'';?>">
                         <?php if (!empty($navnError)): ?>
                             <span class="help-inline"><?php echo $navnError;?></span>
                         <?php endif;?>
                     </div>
-                    <div class="form-group <?php echo !empty($seterError)?'error':'';?>">
-                        <label for="seter">Maks antallseter:</label>
-                        <input class="form-control" name="seter" id="seter" type="text"  placeholder="Antallseter" value="<?php echo !empty($seter)?$seter:'';?>">
-                        <?php if (!empty($seterError)): ?>
-                            <span class="help-inline"><?php echo $seterError;?></span>
-                        <?php endif;?>
-                    </div>
                     <div class="form-group">
-                        <label for="land_id">
-                            <select name="land_id" id="land_id">
+                        <label for="land_id">Tilhørende Land:</label>
+                            <select class="form-control" name="land_id" id="land_id">
                                 <?php foreach ($land as $row): ?>
                                     <option><?=$row["navn"]?></option>
                                 <?php endforeach ?>
                             </select>
-                        </label>
                     </div>
                     <button type="submit" class="btn btn-success">Create</button>
                     <button type="reset" class="btn btn-danger">Reset</button>

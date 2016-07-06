@@ -10,7 +10,7 @@ include ('../base/nav.php');
 ?>
     <div class="container">
         <div class="row">
-            <h3>Fly CRUD</h3>
+            <h3>Flyplass CRUD</h3>
         </div>
         <div class="row">
             <p>
@@ -19,9 +19,8 @@ include ('../base/nav.php');
             <table class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>Model</th>
+                    <th>Kode</th>
                     <th>Name</th>
-                    <th>Seter</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -29,12 +28,11 @@ include ('../base/nav.php');
                 <?php
                 include '../base/db-connection.php';
                 $pdo = Database::connect();
-                $sql = 'SELECT * FROM flytyper ORDER BY id DESC';
+                $sql = 'SELECT * FROM flyplasser ORDER BY id DESC';
                 foreach ($pdo->query($sql) as $row) {
                     echo '<tr>';
-                    echo '<td>'. $row['model'] . '</td>';
+                    echo '<td>'. $row['kode'] . '</td>';
                     echo '<td>'. $row['navn'] . '</td>';
-                    echo '<td>'. $row['seter'] . '</td>';
                     echo '<td width=250>';
                     echo '<a class="btn btn-default" href="read.php?id='.$row['id'].'">Read</a>';
                     echo '&nbsp;';

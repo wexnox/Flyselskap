@@ -18,7 +18,7 @@ if ( null==$id ) {
 } else {
     $pdo = Database::connect();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT * FROM flytyper where id = ?";
+    $sql = "SELECT * FROM flyplasser where id = ?";
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
@@ -28,20 +28,16 @@ if ( null==$id ) {
 ?>
     <div class="container">
         <div class="row">
-            <h3>Read a flytype</h3>
+            <h3>Informasjon om flyplassen</h3>
             <form class="form" role="form">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <label>Registrert Model:</label>
-                        <?php echo $data['model'];?>
+                        <label>Registrert kode:</label>
+                        <?php echo $data['kode'];?>
                     </div>
                     <div class="form-group">
                         <label>Registrert Navn:</label>
                         <?php echo $data['navn'];?>
-                    </div>
-                    <div class="form-group">
-                        <label>Registrert antallseter:</label>
-                        <?php echo $data['seter'];?>
                     </div>
                     <a class="btn btn-default" href="index.php">Back</a>
                 </div>

@@ -21,79 +21,84 @@ if ( null==$id ) {
 }
 
 if ( !empty($_POST)) {
-    $modelError = null;
-    $navnError = null;
-    $seterError = null;
+    $flytype_idError = null;
+    $kodeError = null;
 
-    $model = $_POST['model'];
-    $navn = $_POST['navn'];
-    $seter = $_POST['seter'];
+    $flytype_id = $_POST['flytype_id'];
+    $kode = $_POST['kode'];
+    
     $valid = true;
-    if (empty($model)) {
-        $modelError = 'Fyll ut Model';
+
+    if (empty($flytype_id)) {
+        $flytype_idError = 'Fyll ut Flytype ID';
         $valid = false;
     }
 
-    if (empty($navn)) {
-        $navnError = 'Fyll ut Navn';
+    if (empty($kode)) {
+        $kodeError = 'Fyll ut Fly Kode';
         $valid = false;
     }
-
-    if (empty($seter)) {
-        $seterError = 'Fyll ut Max antallseter';
-        $valid = false;
-    }
-    if ($valid) {
+    if (!empty($kode)){  // denne her skal videreføres
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE flytyper  SET model = ?, navn = ?, seter =? WHERE id = ?";
-        $q = $pdo->prepare($sql);
-        $q->execute(array($model, $navn, $seter, $id));
-        Database::disconnect();
-        header("Location: index.php");
+        $sql = $pdo->prepare("SELECT COUNT(*) AS `total` FROM fly WHERE kode = :kode");
+        $sql->execute(array(':kode' => $kode));
+        $result = $sql->fetchObject();
+        if ($result->total > 0)
+        {
+            echo '<div class="container">';
+            echo '<div class="alert alert-danger">';
+            echo '<p class="lead">Fly kode: <strong>' . $kode. '</strong> er allerede i bruk.<p>';
+            echo '</div></div>';
+        }
+        else  {
+            if ($valid) {
+                $pdo = Database::connect();
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $sql = "UPDATE fly  SET kode = ?, flytype_id = ? WHERE id = ?";
+                $q = $pdo->prepare($sql);
+                $q->execute(array($kode, $flytype_id, $id));
+                Database::disconnect();
+                header("Location: index.php");
+            }
+        }
     }
-}
-else {
+} else {
     $pdo = Database::connect();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT * FROM flytyper WHERE id = ?";
+    $sql = "SELECT * FROM fly WHERE id = ?";
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
-    $model = $data['model'];
-    $navn = $data['navn'];
-    $seter = $data['seter'];
+    $kode = $data['kode'];
+    $flytype_id = $data['flytype_id'];
     Database::disconnect();
 }
+include ('listeboks-flytype.php');
 ?>
+
     <div class="container">
         <div class="row">
             <h3>Update a Flytype</h3>
             <div class="col-lg-4">
                 <form class="form-horizontal" action="update.php?id=<?php echo $id?>" method="post">
-                    <div class="form-group <?php echo !empty($modelError)?'error':'';?>">
-                        <label for="model">Model:</label>
-                        <input class="form-control" id="model" name="model" type="text"  placeholder="Fyll ut model" value="<?php echo !empty($model)?$model:'';?>">
-                        <?php if (!empty($modelError)): ?>
-                            <span class="help-inline"><?php echo $modelError;?></span>
-                        <?php endif; ?>
+                    <div class="form-group <?php echo !empty($flytype_idError)?'error':'';?>">
+                        <label for="flytype_id">Flytype ID:</label>
+                        <select class="form-control" name="flytype_id" id="flytype_id">
+                            <?php foreach ($flytype as $row): ?>
+                                <option><?=$row["id"].$row["model"].$row["navn"]?></option>
+                            <?php endforeach ?>
+                        </select>
                     </div>
-                    <div class="form-group <?php echo !empty($navnError)?'error':'';?>">
-                        <label for="navn">Navn:</label>
-                        <input class="form-control" id="navn" name="navn" type="text" placeholder="Fyll ut Navn" value="<?php echo !empty($navn)?$navn:'';?>">
-                        <?php if (!empty($navnError)): ?>
-                            <span class="help-inline"><?php echo $navnError;?></span>
+                    <div class="form-group <?php echo !empty($kodeError)?'error':'';?>">
+                        <label for="kode">Fly Kode</label>
+                        <input class="form-control" id="kode" name="kode" type="text" placeholder="Fyll ut Navn" value="<?php echo !empty($kode)?$kode:'';?>">
+                        <?php if (!empty($kodeError)): ?>
+                            <span class="help-inline"><?php echo $kodeError;?></span>
                         <?php endif;?>
                     </div>
-                    <div class="form-group <?php echo !empty($seterError)?'error':'';?>">
-                        <label for="seter">Antallseter</label>
-                        <input class="form-control" id="seter" name="seter" type="text"  placeholder="Fyll ut max antallseter" value="<?php echo !empty($seter)?$seter:'';?>">
-                        <?php if (!empty($seterError)): ?>
-                            <span class="help-inline"><?php echo $seterError;?></span>
-                        <?php endif;?>
-                    </div>
+
                     <button class="btn btn-success" type="submit" >Update</button>
-                    <button class="btn btn-danger" type="reset">Reset</button>
                     <a class="btn btn-default" href="index.php">Back</a>
                 </form>
             </div>
